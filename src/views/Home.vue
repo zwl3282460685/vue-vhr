@@ -17,10 +17,21 @@
 
             </el-header>
             <el-container>
-                <el-aside width="200px">Aside</el-aside>
+                <el-aside width="200px">
+                    <el-menu router>
+                        <el-submenu index="1" v-for="(item,index) in this.$router.options.routes" v-if="!item.hidden" :key="index">
+                            <template slot="title">
+                                <i class="el-icon-location"></i>
+                                <span>{{item.name}}</span>
+                            </template>
+                                <el-menu-item :index="child.path" v-for="(child, indexj) in item.children" :key="indexj">
+                                    {{child.name}}
+                                </el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                </el-aside>
                 <el-container>
-                    <el-main>Main</el-main>
-                    <el-footer>Footer</el-footer>
+                    <router-view/>
                 </el-container>
             </el-container>
         </el-container>
