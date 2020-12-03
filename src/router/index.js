@@ -5,6 +5,7 @@ import Home from "../views/Home";
 import Test1 from "../views/Test1";
 import Test2 from "../views/Test2";
 
+
 Vue.use(VueRouter)
 export default new VueRouter({
     routes: [
