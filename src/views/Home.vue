@@ -39,7 +39,7 @@
                     <div class="homeWelcome"  v-if="this.$router.currentRoute.path == '/home'">
                         欢迎使用人事系统!
                     </div>
-                    <router-view/>
+                    <router-view class="homeRouterView"/>
                 </el-main>
             </el-container>
         </el-container>
@@ -84,6 +84,9 @@
 </script>
 
 <style>
+    .homeRouterView {
+        margin-top: 15px;
+    }
     .homeHeader {
         background-color: #409eff;
         display: flex;

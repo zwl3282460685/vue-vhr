@@ -14,6 +14,7 @@ import {deleteRequest} from './utils/api'
 import {putRequest} from './utils/api'
 import {initMenu} from './utils/menus';
 import 'font-awesome/css/font-awesome.min.css'
+import el from "element-ui/src/locale/lang/el";
 
 
 Vue.prototype.postRequest = postRequest;
@@ -31,8 +32,12 @@ router.beforeEach((to, from, next) => {
   if(to.path == '/'){
     next();
   }else {
-    initMenu(router, store);
-    next();
+    if(window.sessionStorage.getItem("user")){
+      initMenu(router, store);
+      next();
+    }else {
+      next('/?redirect=' + to.path);
+    }
   }
 })
 
