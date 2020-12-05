@@ -1,4 +1,4 @@
-//菜单栏工具类
+//菜单栏工具类(用于路由转发)
 import {getRequest} from './api'
 
 export const initMenu = (router, store) => {
@@ -17,14 +17,13 @@ export const initMenu = (router, store) => {
 
 export const formatRoutes = (routes) => {
     let fmRoutes = [];
-    console.log("++++++" + routes + "++++++++")
     routes.forEach(router => {
         let {
             path,
             component,
             name,
             meta,
-            iconCls,
+            iconcls,
             children
         } = router;
         if(children && children instanceof Array){
@@ -33,11 +32,13 @@ export const formatRoutes = (routes) => {
         let fmRouter = {
             path: path,
             name: name,
-            iconCls: iconCls,
+            iconcls: iconcls,
             meta: meta,
             children: children,
             component(resolve){
-                if(component.startsWith("Emp")){
+                if(component.startsWith("Home")){
+                    require(['../views/' + component + '.vue'], resolve);
+                }else if(component.startsWith("Emp")){
                     require(['../views/emp/' + component + '.vue'], resolve);
                 }else if (component.startsWith("Per")){
                     require(['../views/per/' + component + '.vue'], resolve);
@@ -47,8 +48,6 @@ export const formatRoutes = (routes) => {
                     require(['../views/sys/' + component + '.vue'], resolve);
                 }else if(component.startsWith("Sta")){
                     require(['../views/sta/' + component + '.vue'], resolve);
-                }else{
-                    require(['../views/' + component + '.vue'], resolve);
                 }
             }
         }
