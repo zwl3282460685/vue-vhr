@@ -3,14 +3,14 @@
         <div style="margin-top: 10px; display: flex; justify-content: center">
             <el-input v-model="keywords" placeholder="通过用户名搜索用户..."
              prefix-icon="el-icon-search" style="width: 400px; margin-left: 10px"
-             size="small"></el-input>
-            <el-button icon="el-icon-search" type="primary" size="small" style="margin-left: 5px">搜索</el-button>
+             size="small" @keydown.enter.native="doSearch"></el-input>
+            <el-button icon="el-icon-search" type="primary" size="small" style="margin-left: 5px" @click="doSearch">搜索</el-button>
         </div>
         <div class="hr-container">
             <el-card class="Hr-boxCard" v-for="(hr, index) in hrs" :key="index">
                 <div slot="header" class="clearfix">
                     <span>{{hr.name}}</span>
-                    <el-button style="float: right; padding: 3px 0; color: #ff5b22" type="text" icon="el-icon-delete"></el-button>
+                    <el-button style="float: right; padding: 3px 0; color: #ff5b22" type="text" icon="el-icon-delete" @click="deleteHrById(hr)"></el-button>
                 </div>
                 <div>
                     <div class="img-container">
@@ -28,14 +28,14 @@
                                 inactive-text="禁用"
                                 active-color="#13ce66"
                                 inactive-color="#ff4949"
-                                width="30px"
+                                @change="enabledChange(hr)"
                                 >
                             </el-switch>
                         </div>
                         <div>用户角色：
                             <el-tag type="success"
                                     v-for="(role, indexj) in hr.roles"
-                                    :key="index"
+                                    :key="indexj"
                                     size="small"
                                     style="margin-right: 2px; margin-top: 2px">
                                 {{role.nameZh}}</el-tag>
@@ -63,8 +63,37 @@
             this.initHrs();
         },
         methods: {
+            deleteHrById(hr){
+                this.$confirm('是否删除选中的人员? ', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteRequest("/system/hr/" + hr.id).then(resp=>{
+                        if(resp){
+                            this.initHrs();
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            doSearch(){
+                this.initHrs();
+            },
+            enabledChange(hr){
+                delete hr.roles;
+                this.putRequest("/system/hr/", hr).then(resp=>{
+                    if(resp){
+                        this.initHrs();
+                    }
+                });
+            },
             initHrs(){
-                this.getRequest("/system/hr/").then(resp=>{
+                this.getRequest("/system/hr/?keywords=" + this.keywords).then(resp=>{
                     if(resp){
                         this.hrs = resp;
                     }
