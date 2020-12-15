@@ -173,9 +173,9 @@
                         width="200"
                         label="操作">
                     <template slot-scope="scope">
-                        <el-button style="padding: 3px" size="mini">编辑</el-button>
+                        <el-button style="padding: 3px" size="mini" @click="showEditEmpView(scope.row)">编辑</el-button>
                         <el-button style="padding: 3px" size="mini" type="primary">查看高级资料</el-button>
-                        <el-button style="padding: 3px" size="mini" type="danger">删除</el-button>
+                        <el-button style="padding: 3px" size="mini" type="danger" @click="deleteEmp(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -190,7 +190,7 @@
             </el-pagination>
         </div>
         <el-dialog
-                title="添加员工"
+                :title="title"
                 :visible.sync="dialogVisible"
                 width="80%">
             <div>
@@ -446,6 +446,7 @@
         name: "EmpBasic",
         data() {
             return {
+                title: '',
                 allDeps: [],
                 popVisible: false,
                 tiptopDegrees: ['本科', '大专', '硕士', '博士', '高中', '初中', '小学', '其他'],
@@ -538,17 +539,87 @@
             this.initData();
         },
         methods: {
+            emptyEmp(){
+                this.emp = {
+                    name: "",
+                    gender: "",
+                    birthday: "",
+                    idCard: "",
+                    wedlock: "",
+                    nationId: null,
+                    nativePlace: "",
+                    politicId: 13,
+                    email: "",
+                    phone: "",
+                    address: "",
+                    departmentId: null,
+                    jobLevelId: null,
+                    posId: 29,
+                    engageForm: "",
+                    tiptopDegree: "",
+                    specialty: "",
+                    school: "",
+                    beginDate: "",
+                    workState: "在职",
+                    workId: "",
+                    contractTerm: 2,
+                    conversionTime: "",
+                    notworkDate: null,
+                    beginContract: "",
+                    endContract: "",
+                    workAge: null
+                }
+                this.inputDepName = '';
+            },
+            showEditEmpView(data){
+                this.initPositions();
+                this.title='修改员工信息';
+                this.emp = data;
+                this.inputDepName=data.department.name;
+                this.dialogVisible = true;
+            },
+            deleteEmp(data){
+                this.$confirm('此操作将永久删除【' + data.name + '】, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                   this.deleteRequest("/employee/basic/" + data.id).then(resp=>{
+                       if(resp){
+                           this.initEmps();
+                       }
+                   })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             doAddEmp() {
-                this.$refs['empForm'].validate(valid => {
-                    if (valid) {
-                        this.postRequest("/emp/basic/", this.emp).then(resp => {
-                            if (resp) {
-                                this.dialogVisible = false;
-                                this.initEmps();
-                            }
-                        })
-                    }
-                })
+                if(this.emp.id){
+                    this.$refs['empForm'].validate(valid => {
+                        if (valid) {
+                            this.putRequest("/employee/basic/", this.emp).then(resp => {
+                                if (resp) {
+                                    this.dialogVisible = false;
+                                    this.initEmps();
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    this.$refs['empForm'].validate(valid => {
+                        if (valid) {
+                            this.postRequest("/employee/basic/", this.emp).then(resp => {
+                                if (resp) {
+                                    this.dialogVisible = false;
+                                    this.initEmps();
+                                }
+                            })
+                        }
+                    })
+                }
             },
             handleNodeClick(data) {
                 this.inputDepName = data.name;
@@ -559,14 +630,14 @@
                 this.popVisible = !this.popVisible;
             },
             getMaxWorkID() {
-                this.getRequest("/emp/basic/maxWorkId").then(resp => {
+                this.getRequest("/employee/basic/maxWorkId").then(resp => {
                     if (resp) {
                         this.emp.workId = resp.obj;
                     }
                 })
             },
             initPositions() {
-                this.getRequest("/emp/basic/positions").then(resp => {
+                this.getRequest("/employee/basic/positions").then(resp => {
                     if (resp) {
                         this.positions = resp;
                     }
@@ -575,7 +646,7 @@
 
             initData() {
                 if (!window.sessionStorage.getItem("nations")) {
-                    this.getRequest("/emp/basic/nations").then(resp => {
+                    this.getRequest("/employee/basic/nations").then(resp => {
                         if (resp) {
                             this.nations = resp;
                             window.sessionStorage.setItem("nations", JSON.stringify(resp));
@@ -587,7 +658,7 @@
                 }
 
                 if (!window.sessionStorage.getItem("jobLevels")) {
-                    this.getRequest("/emp/basic/jobLevels").then(resp => {
+                    this.getRequest("/employee/basic/jobLevels").then(resp => {
                         if (resp) {
                             this.jobLevels = resp;
                             window.sessionStorage.setItem("jobLevels", JSON.stringify(resp));
@@ -598,7 +669,7 @@
                 }
 
                 if (!window.sessionStorage.getItem("politicsstatus")) {
-                    this.getRequest("/emp/basic/politicsstatus").then(resp => {
+                    this.getRequest("/employee/basic/politicsstatus").then(resp => {
                         if (resp) {
                             this.politicsstatus = resp;
                             window.sessionStorage.setItem("politicsstatus", JSON.stringify(resp));
@@ -609,7 +680,7 @@
                 }
 
                 if (!window.sessionStorage.getItem("deps")) {
-                    this.getRequest("/emp/basic/deps").then(resp => {
+                    this.getRequest("/employee/basic/deps").then(resp => {
                         if (resp) {
                             this.allDeps = resp;
                             window.sessionStorage.setItem("deps", JSON.stringify(resp));
@@ -620,6 +691,8 @@
                 }
             },
             showAddEmpView() {
+                this.emptyEmp();
+                this.title = '添加员工';
                 this.initPositions();
                 this.getMaxWorkID();
                 this.dialogVisible = true;
@@ -634,7 +707,7 @@
             },
             initEmps() {
                 this.loading = true;
-                this.getRequest("/emp/basic/?page=" + this.page + "&size=" + this.size + "&keyword=" + this.keyword).then(resp => {
+                this.getRequest("/employee/basic/?page=" + this.page + "&size=" + this.size + "&keyword=" + this.keyword).then(resp => {
                     this.loading = false;
                     if (resp) {
                         this.emps = resp.data;
