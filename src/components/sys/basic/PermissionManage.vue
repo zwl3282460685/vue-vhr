@@ -99,10 +99,10 @@
                 let tree = this.$refs.tree[index];
                 let selectedKeys = tree.getCheckedKeys(true);
                 let url = '/system/basic/permission/?rid=' + rid;
-                if(selectedKeys.length === 0){
-                    this.$message.error('必须给定一个权限');
-                    return;
-                }
+                // if(selectedKeys.length === 0){
+                //     this.$message.error('必须给定一个权限');
+                //     return;
+                // }
                 selectedKeys.forEach(key=>{
                     url += '&mids=' + key;
                 })
