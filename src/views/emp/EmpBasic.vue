@@ -4,12 +4,13 @@
             <div style="display: flex; justify-content: space-between">
                 <div>
                     <el-input placeholder="请输入员工名进行搜索" prefix-icon="el-icon-search"
-                              style="width: 300px; margin-right: 10px" size="small"
+                              style="width: 350px; margin-right: 10px" size="small"
                               v-model="keyword" @keydown.enter.native="initEmps"
                               clearable
-                              @clear="initEmps"
-                    ></el-input>
-                    <el-button type="primary" @click="" icon="el-icon-search" size="small" @click="initEmps">搜索</el-button>
+                              @clear="initEmps" :disabled="showAdvanceSearchView">
+
+                    </el-input>
+                    <el-button type="primary" @click="" icon="el-icon-search" size="small" @click="initEmps" :disabled="showAdvanceSearchView">搜索</el-button>
                     <el-button type="primary" @click="" size="small" @click="showAdvanceSearchView = !showAdvanceSearchView">
                         <i :class="showAdvanceSearchView?'fa fa-angle-double-up':'fa fa-angle-double-down'" aria-hidden="true"></i>
                         高级搜索
@@ -42,7 +43,7 @@
                 <el-row>
                     <el-col :span="5">
                         政治面貌：
-                        <el-select v-model="emp.politicId" placeholder="政治面貌" size="mini" style="width: 130px">
+                        <el-select v-model="searchValues.politicId" placeholder="政治面貌" size="mini" style="width: 130px">
                             <el-option
                                     v-for="item in politicsstatus"
                                     :key="item.id"
@@ -53,7 +54,7 @@
                     </el-col>
                     <el-col :span="4">
                         民族：
-                        <el-select v-model="emp.nationId" placeholder="民族" size="mini" style="width: 130px">
+                        <el-select v-model="searchValues.nationId" placeholder="民族" size="mini" style="width: 130px">
                             <el-option
                                     v-for="item in nations"
                                     :key="item.id"
@@ -64,7 +65,7 @@
                     </el-col>
                     <el-col :span="4">
                         职位：
-                        <el-select v-model="emp.posId" placeholder="请选择职位" size="mini" style="width: 130px">
+                        <el-select v-model="searchValues.posId" placeholder="请选择职位" size="mini" style="width: 130px">
                             <el-option
                                     v-for="item in positions"
                                     :key="item.id"
@@ -75,7 +76,7 @@
                     </el-col>
                     <el-col :span="4">
                         职称：
-                        <el-select v-model="emp.jobLevelId" placeholder="请选择职称" size="mini"
+                        <el-select v-model="searchValues.jobLevelId" placeholder="请选择职称" size="mini"
                                    style="width: 130px">
                             <el-option
                                     v-for="item in jobLevels"
@@ -87,7 +88,7 @@
                     </el-col>
                     <el-col :span="7">
                         聘用形式：
-                        <el-radio-group v-model="emp.engageForm">
+                        <el-radio-group v-model="searchValues.engageForm">
                             <el-radio label="劳动合同">劳动合同</el-radio>
                             <el-radio label="劳务合同">劳务合同</el-radio>
                         </el-radio-group>
@@ -101,32 +102,33 @@
                                 title="请选择部门"
                                 width="220"
                                 trigger="manual"
-                                v-model="popVisible">
+                                v-model="popVisible2">
                             <el-tree default-expand-all :data="allDeps" :props="defaultProps"
-                                     @node-click="handleNodeClick"></el-tree>
+                                     @node-click="searchViewHandleNodeClick"></el-tree>
                             <div style="width: 130px; display: inline-flex; font-size: 13px;
                                             border: 1px solid #dedede;
                                             height: 24px; border-radius: 4px; margin-top: 8px;
                                             cursor: pointer; align-items: center; padding-left: 8px;box-sizing: border-box;"
-                                 @click="showDepView"
-                                 slot="reference">
-                                所属部门
-                            </div>
+                                 @click="showDepView2"
+                                 slot="reference">{{inputDepName2}}</div>
                         </el-popover>
                     </el-col>
                     <el-col :span="10">
                         入职日期：
                         <el-date-picker
+                                v-model="searchValues.beginDataScope"
                                 size="mini"
+                                unlink-panels
                                 type="daterange"
+                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-col>
                     <el-col :span="5" :offset="4">
-                        <el-button size="mini">取消</el-button>
-                        <el-button size="mini" icon="el-icon-search" type="primary">搜索</el-button>
+                        <el-button size="mini" @click="showAdvanceSearchView = !showAdvanceSearchView">取消</el-button>
+                        <el-button size="mini" icon="el-icon-search" type="primary" @click="initEmps('advanced')">搜索</el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -290,11 +292,11 @@
                 </el-table-column>
                 <el-table-column
                         fixed="right"
-                        width="200"
+                        width="100"
                         label="操作">
                     <template slot-scope="scope">
                         <el-button style="padding: 3px" size="mini" @click="showEditEmpView(scope.row)">编辑</el-button>
-                        <el-button style="padding: 3px" size="mini" type="primary">查看高级资料</el-button>
+<!--                        <el-button style="padding: 3px" size="mini" type="primary">查看高级资料</el-button>-->
                         <el-button style="padding: 3px" size="mini" type="danger" @click="deleteEmp(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -566,6 +568,17 @@
         name: "EmpBasic",
         data() {
             return {
+                searchValues: {
+                    politicId: null,
+                    nationId: null,
+                    jobLevelId: null,
+                    posId: null,
+                    engageForm: null,
+                    departmentId: null,
+                    beginDataScope: null
+                },
+                inputDepName2: '',
+                popVisible2: false,
                 showAdvanceSearchView: false,
                 importDataDisabled: false,
                 importDataButtonText: '导入数据',
@@ -585,7 +598,7 @@
                 page: 1,
                 size: 10,
                 total: 0,
-                inputDepName: '',
+                inputDepName: '所属部门',
                 emp: {
                     name: "",
                     gender: "",
@@ -664,6 +677,11 @@
             this.initPositions();
         },
         methods: {
+            searchViewHandleNodeClick(data){
+                this.inputDepName2 = data.name;
+                this.searchValues.departmentId = data.id;
+                this.popVisible2 = !this.popVisible2;
+            },
             onError(err, file, fileList){
                 this.importDataButtonText = '导入数据';
                 this.importDataButtonIcon = 'el-icon-upload2';
@@ -682,7 +700,6 @@
             },
             exportDate(){
                 window.open('/employee/basic/export/', '_parent');
-
             },
             emptyEmp(){
                 this.emp = {
@@ -774,6 +791,9 @@
             showDepView() {
                 this.popVisible = !this.popVisible;
             },
+            showDepView2() {
+                this.popVisible2 = !this.popVisible2;
+            },
             getMaxWorkID() {
                 this.getRequest("/employee/basic/maxWorkId").then(resp => {
                     if (resp) {
@@ -849,15 +869,41 @@
                 this.page = currentPage;
                 this.initEmps();
             },
-            initEmps() {
+            initEmps(type) {
                 this.loading = true;
-                this.getRequest("/employee/basic/?page=" + this.page + "&size=" + this.size + "&keyword=" + this.keyword).then(resp => {
+                let url = '/employee/basic/' + '?page=' + this.page + "&size=" + this.size;
+                if(type && type == 'advanced'){//高级搜索
+                    if(this.searchValues.politicId){
+                        url += '&politicId=' + this.searchValues.politicId;
+                    }
+                    if(this.searchValues.nationId){
+                        url += '&nationId=' + this.searchValues.nationId;
+                    }
+                    if(this.searchValues.jobLevelId){
+                        url += '&jobLevelId=' + this.searchValues.jobLevelId;
+                    }
+                    if(this.searchValues.posId){
+                        url += '&posId=' + this.searchValues.posId;
+                    }
+                    if(this.searchValues.engageForm){
+                        url += '&engageForm=' + this.searchValues.engageForm;
+                    }
+                    if(this.searchValues.departmentId){
+                        url += '&departmentId=' + this.searchValues.departmentId;
+                    }
+                    if(this.searchValues.beginDataScope){
+                        url += '&beginDataScope=' + this.searchValues.beginDataScope;
+                    }
+                }else{ //普通搜索
+                    url += "&name=" + this.keyword;
+                }
+                this.getRequest(url).then(resp => {
                     this.loading = false;
                     if (resp) {
                         this.emps = resp.data;
                         this.total = resp.total;
                     }
-                })
+                });
             }
         }
     }
