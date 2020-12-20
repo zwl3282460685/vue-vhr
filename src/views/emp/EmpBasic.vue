@@ -439,7 +439,7 @@
                         <el-col :span="7">
                             <el-form-item label="电话号码：" prop="phone">
                                 <el-input size="mini" style="width: 200px" prefix-icon="el-icon-phone"
-                                          v-model="emp.phone" placeholder="所属部门"></el-input>
+                                          v-model="emp.phone" placeholder="电话号码"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
