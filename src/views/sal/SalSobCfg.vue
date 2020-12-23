@@ -10,7 +10,7 @@
                 <el-table-column prop="department.name" label="所属部门"  width="120" align="left"></el-table-column>
                 <el-table-column label="工资账套信息" align="center">
                     <template slot-scope="scope">
-                        <el-tooltip placement="right">
+                        <el-tooltip placement="right" v-if="scope.row.salary">
                             <div slot="content">
                                 <table>
                                     <tr>
@@ -61,6 +61,7 @@
                             </div>
                             <el-tag>{{scope.row.salary.name}}</el-tag>
                         </el-tooltip>
+                        <el-tag v-else>暂未设置</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" align="center">
@@ -68,6 +69,7 @@
                         <el-popover
                                 placement="left"
                                 title="修改工资账套"
+                                @hide="hidePop(scope.row)"
                                 @show="showPop(scope.row.salary)"
                                 width="200"
                                 trigger="click">
@@ -86,6 +88,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div style="display: flex;justify-content: flex-end; margin-top: 5px">
+                <el-pagination
+                        background
+                        @size-change="sizeChange"
+                        @current-change="currentChange"
+                        layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                        :total="total">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -97,7 +108,10 @@
             return{
                 emps: [],
                 salaries:[],
-                currentSalary: -1
+                currentSalary: null,
+                total: 0,
+                currentPage: 1,
+                currentSize: 10
             }
         },
         mounted() {
@@ -105,13 +119,36 @@
             this.initSalaries();
         },
         methods: {
+            sizeChange(size){
+              this.currentSize = size;
+              this.initEmps()
+            },
+            currentChange(page){
+              this.currentPage = page;
+              this.initEmps();
+            },
+            hidePop(data){
+                if (this.currentSalary) {
+                    this.putRequest("/salary/sobcfg/?eid=" + data.id + '&sid=' + this.currentSalary).then(resp => {
+                        if (resp) {
+                            this.initEmps();
+                        }
+                    })
+                }
+            },
             showPop(data){
-                this.currentSalary = data.id;
+                if(data){
+                    this.currentSalary = data.id;
+                }else{
+                    this.currentSalary= null;
+                }
+
             },
             initEmps(){
-                this.getRequest("/salary/sobcfg/").then(resp=>{
+                this.getRequest("/salary/sobcfg/?page=" + this.currentPage + '&size=' + this.currentSize).then(resp=>{
                     if(resp){
                         this.emps = resp.data;
+                        this.total=resp.total;
                     }
                 })
             },
