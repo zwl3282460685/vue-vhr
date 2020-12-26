@@ -6,11 +6,11 @@ export const initMenu = (router, store) => {
         return;
     }
     getRequest("/system/config/menu").then(data => {
-        console.log(data)
         if(data){
             let fmRoutes = formatRoutes(data);
             router.addRoutes(fmRoutes);
             store.commit('initRoutes', fmRoutes);
+            store.dispatch('connect');
         }
     })
 }

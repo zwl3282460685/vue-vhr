@@ -4,6 +4,9 @@
             <el-header class="homeHeader">
                 <div class="title">人事系统</div>
                 <div>
+                    <el-button icon="el-icon-bell" type="text"
+                               style="margin-right: 8px; color: #000000" size="big"
+                               @click="goChat"></el-button>
                     <el-dropdown class="userInfo" @command="commandHandler">
                         <span class="el-dropdown-link">
                                 {{user.name}}
@@ -55,6 +58,9 @@
             }
         },
         methods: {
+            goChat(){
+              this.$router.push("/chat");
+            },
             commandHandler(cmd) {
                 if(cmd == 'logout') {
                     this.$confirm('是否注销登录?', '提示', {

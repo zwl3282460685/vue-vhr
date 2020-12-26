@@ -1,4 +1,9 @@
 let proxyObj= {};
+//webSocket转发配置
+proxyObj['/ws'] = {
+    ws: true,
+    target: "ws://localhost:8082"
+};
 proxyObj['/'] = {
     ws: false,
     target: 'http://localhost:8082',
