@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from "../views/Home";
 import FriendChat from "../views/chat/FriendChat.vue"
+import HrInfo from "../views/HrInfo";
 
 
 Vue.use(VueRouter)
@@ -25,8 +26,14 @@ export default new VueRouter({
         children:[
             {
               path: '/chat',
-              name: 'FriendChat',
+              name: '在线聊天',
               component: FriendChat,
+              hidden: true
+            },
+            {
+              path: '/hrInfo',
+              name: '个人中心',
+              component: HrInfo,
               hidden: true
             }
         ]

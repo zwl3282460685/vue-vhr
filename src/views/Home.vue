@@ -78,6 +78,8 @@
                             message: '已取消操作'
                         });
                     });
+                }else if(cmd == 'userInfo'){
+                    this.$router.push("/hrInfo");
                 }
             }
         },
