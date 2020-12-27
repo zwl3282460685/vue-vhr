@@ -1,12 +1,18 @@
 <template>
-    <div>
+    <div v-if="hr">
         <el-card class="box-card" style="width: 400px">
             <div slot="header" class="clearfix">
                 <span>{{hr.name}}</span>
             </div>
             <div>
                 <div style="display: flex;justify-content: center;margin-bottom: 15px">
-                    <img title="点击修改用户头像" :src="hr.userface" style="width: 100px; height: 100px;border-radius: 50px" alt="">
+                    <el-upload
+                            :show-file-list="false"
+                            :on-success="onSuccess"
+                            :data="hr"
+                            action="/hr/userface">
+                        <img title="点击修改用户头像" :src="hr.userface" style="width: 100px; height: 100px;border-radius: 50px" alt="">
+                    </el-upload>
                 </div>
                 <div>电话号码：<el-tag style="margin-left: 5px">{{hr.telephone}}</el-tag></div>
                 <div style="margin-top: 5px">手机号码：<el-tag style="margin-left: 5px">{{hr.phone}}</el-tag></div>
@@ -134,6 +140,9 @@
             this.initHr();
         },
         methods: {
+            onSuccess(){
+                this.initHr();
+            },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if(valid){
