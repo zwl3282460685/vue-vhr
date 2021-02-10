@@ -11,7 +11,7 @@ const now = new Date();
 
 const store = new Vuex.Store({
     state: {
-        routes: [],
+        routes: [], //路由数组
         sessions: {},
         hrs: [],
         currentSession: null,

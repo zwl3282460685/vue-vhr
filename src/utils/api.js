@@ -2,8 +2,9 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import router from "../router/index";
 
-axios.interceptors.response.use(success => {
-    if(success.status && success.status == 200 && success.data.status == 500){
+//设置响应拦截器
+axios.interceptors.response.use(success => {//请求成功
+    if(success.status && success.status == 200  && success.data.status == 500){
         Message.error({message: success.data.msg})
         return;
     }
@@ -11,7 +12,7 @@ axios.interceptors.response.use(success => {
         Message.success({message: success.data.msg})
     }
     return success.data;
-    }, error => {
+    }, error => {//请求失败
     if (error.response.status == 504 || error.response.status==404){
         Message.error({message: '服务器错误！( ╯□╰ )'})
     } else if(error.response.status == 403){
@@ -29,6 +30,8 @@ axios.interceptors.response.use(success => {
     return;
 })
 
+
+//封装get、post请求
 let base = "";
 export const postKeyValueRequest=(url, params)=>{
     return axios({

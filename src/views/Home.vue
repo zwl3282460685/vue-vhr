@@ -20,9 +20,12 @@
                     </el-dropdown>
                 </div>
             </el-header>
+
+            <!--左侧导航栏-->
             <el-container>
                 <el-aside width="200px">
                     <el-menu router unique-opened>
+                        <!--设置左侧菜单动态修改-->
                         <el-submenu :index="index+''" v-for="(item,index) in routes" v-if="!item.hidden" :key="index">
                             <template slot="title">
                                 <i style="color: #409eff;margin-right: 5px" :class="item.iconcls"></i>
@@ -34,6 +37,7 @@
                         </el-submenu>
                     </el-menu>
                 </el-aside>
+
                 <el-main>
                     <el-breadcrumb separator-class="el-icon-arrow-right" v-if="this.$router.currentRoute.path != '/home'">
                         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -70,7 +74,7 @@
                     }).then(() => {
                         this.getRequest("/logout");
                         window.sessionStorage.removeItem("user");
-                        this.$store.commit('initRoutes', []);
+                        this.$store.commit('initRoutes', []); //清空routes中的数据，防止注销后另一个不同角色的用户看到上一个用户的菜单
                         this.$router.replace("/");
                     }).catch(() => {
                         this.$message({
@@ -85,7 +89,7 @@
         },
         computed: {
             routes() {
-                return this.$store.state.routes;
+                return this.$store.state.routes; //从vuex的store中获取routes数组
             },
             user(){
                 return this.$store.state.currentHr;

@@ -17,6 +17,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import el from "element-ui/src/locale/lang/el";
 
 
+//注册插件
 Vue.prototype.postRequest = postRequest;
 Vue.prototype.postKeyValueRequest = postKeyValueRequest;
 Vue.prototype.getRequest = getRequest;
@@ -28,6 +29,7 @@ Vue.config.productionTip = false
 Vue.use(axios)
 Vue.use(ElementUI);
 
+//全局路由导航守卫，防止浏览器刷新后菜单丢失
 router.beforeEach((to, from, next) => {
   if(to.path == '/'){
     next();

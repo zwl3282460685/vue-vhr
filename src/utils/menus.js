@@ -7,7 +7,7 @@ export const initMenu = (router, store) => {
     }
     getRequest("/system/config/menu").then(data => {
         if(data){
-            let fmRoutes = formatRoutes(data);
+            let fmRoutes = formatRoutes(data);//对返回的数据进行格式化
             router.addRoutes(fmRoutes);
             store.commit('initRoutes', fmRoutes);
             store.dispatch('connect');
@@ -51,7 +51,7 @@ export const formatRoutes = (routes) => {
                 }
             }
         }
-        fmRoutes.push(fmRouter);
+        fmRoutes.push(fmRouter);//放到数组中
     })
     return fmRoutes;
 }
