@@ -18,7 +18,7 @@
                 <el-input type="text" v-model="loginForm.code" auto-complete="off" placeholder="点击图片更换验证码"
                           @keydown.enter.native="submitLogin"
                           style="width: 250px"></el-input>
-                <img :src="vcUrl" @click="updateVerifyCode"/>
+                <img style="margin-left: 5px; width: 150px" :src="vcUrl" @click="updateVerifyCode"/>
             </el-form-item>
             <el-checkbox class="loginRemember" v-model="checked">记住我</el-checkbox>
             <el-button type="primary" style="width: 100%;" @click="submitLogin">登录</el-button>

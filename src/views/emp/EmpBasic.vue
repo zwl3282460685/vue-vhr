@@ -140,6 +140,7 @@
                     :data="emps"
                     stripe
                     border
+                    @selection-change="handleSelectionChange"
                     style="width: 100%">
                 <el-table-column
                         type="selection"
@@ -302,7 +303,12 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div style="display: flex; justify-content: flex-end; margin-top: 5px">
+        <div style="display: flex; justify-content: flex-end; margin-top: 2px">
+            <el-button type="danger" size="small" class="deleteBatch" @click="deleteBasicByIds"
+                       :disabled="multipleSelectEmps.length===0">
+                批量删除
+            </el-button>
+
             <el-pagination
                     background
                     @current-change="currentChange"
@@ -326,7 +332,7 @@
                         </el-col>
                         <el-col :span="5">
                             <el-form-item label="性别：" prop="gender">
-                                <el-radio-group v-model="emp.gender">
+                                <el-radio-group v-model="emp.gender" style="margin-top: 12px">
                                     <el-radio label="男">男</el-radio>
                                     <el-radio label="女">女</el-radio>
                                 </el-radio-group>
@@ -537,7 +543,7 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="聘用形式：" prop="engageForm">
-                                <el-radio-group v-model="emp.engageForm">
+                                <el-radio-group v-model="emp.engageForm" style="margin-top: 13px">
                                     <el-radio label="劳动合同">劳动合同</el-radio>
                                     <el-radio label="劳务合同">劳务合同</el-radio>
                                 </el-radio-group>
@@ -545,7 +551,7 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="婚姻状况：" prop="wedlock">
-                                <el-radio-group v-model="emp.wedlock">
+                                <el-radio-group v-model="emp.wedlock" style="margin-top: 13px">
                                     <el-radio label="已婚">已婚</el-radio>
                                     <el-radio label="未婚">未婚</el-radio>
                                     <el-radio label="离异">离异</el-radio>
@@ -568,6 +574,7 @@
         name: "EmpBasic",
         data() {
             return {
+                multipleSelectEmps: [],
                 searchValues: {
                     politicId: null,
                     nationId: null,
@@ -626,7 +633,7 @@
                     notworkDate: null,
                     beginContract: "",
                     endContract: "",
-                    workAge: null
+                    workAge: null,
                 },
                 defaultProps: {
                     children: 'children',
@@ -677,6 +684,31 @@
             this.initPositions();
         },
         methods: {
+            handleSelectionChange(val){
+                this.multipleSelectEmps = val;
+            },
+            deleteBasicByIds(ids){
+                this.$confirm('是否删除选中的员工信息? ', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let ids = '?';
+                    this.multipleSelectEmps.forEach(item=>{
+                        ids += 'ids=' + item.id + '&';
+                    })
+                    this.deleteRequest("/employee/basic/" + ids).then(resp=>{
+                        if(resp){
+                            this.initEmps();
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             searchViewHandleNodeClick(data){
                 this.inputDepName2 = data.name;
                 this.searchValues.departmentId = data.id;
@@ -910,15 +942,19 @@
 </script>
 
 <style>
+    .deleteBatch {
+        margin-top: 2px;
+        margin-right: 350px;
+    }
     .slide-fade-enter-active {
         transition: all .8s ease;
     }
     .slide-fade-leave-active {
         transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
-    .slide-fade-enter, .slide-fade-leave-to
-        /* .slide-fade-leave-active for below version 2.1.8 */ {
+    .slide-fade-enter, .slide-fade-leave-to {
         transform: translateX(10px);
         opacity: 0;
     }
+
 </style>

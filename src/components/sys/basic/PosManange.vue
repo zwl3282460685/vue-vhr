@@ -114,7 +114,6 @@
         methods: {
             handleSelectionChange(val){
                 this.multipleSelection = val;
-
             },
             deletePositionByIds(){
                 this.$confirm('是否删除选中的职位? ', '提示', {
@@ -155,7 +154,7 @@
                 })
             },
             showEditView(index, data) {
-                Object.assign(this.updatePos, data);
+                Object.assign(this.updatePos, data); //拷贝值
                 this.dialogVisible = true;
             },
             handleDelete(index, data){
@@ -206,6 +205,5 @@
     .updatePosInput {
         width: 200px;
         margin-left: 8px;
-
     }
 </style>
