@@ -14,6 +14,9 @@
                 </el-option>
             </el-select>
             <el-button icon="el-icon-plus" size="small" type="primary" @click="addJobLevel">添加</el-button>
+            <el-button type="danger" size="small" class="deleteJobLevelBatch" style="margin-left: 20px"
+                       @click="deleteJobLevelByIds"
+                       :disabled="multipleSelection.length === 0">批量删除</el-button>
         </div>
         <div style="margin-top: 10px">
             <el-table
@@ -61,9 +64,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-button type="danger" size="small" class="deleteJobLevelBatch"
-                       @click="deleteJobLevelByIds"
-                       :disabled="multipleSelection.length === 0">批量删除</el-button>
+
             <el-dialog title="修改职称信息" :visible.sync="dialogVisible" width="30%">
                 <div>
                     <table>
@@ -97,6 +98,14 @@
             <el-button size="small" type="primary" @click="doUpdateJobLevel">确 定</el-button>
             </span>
             </el-dialog>
+                <el-pagination
+                        style="display: flex; justify-content: flex-end;width: 80%;margin-top: 6px"
+                        background
+                        @current-change="currentChange"
+                        @size-change="sizeChange"
+                        layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                        :total="total">
+                </el-pagination>
         </div>
     </div>
 </template>
@@ -125,13 +134,25 @@
                     '初级',
                     '中级',
                     '员级'
-                ]
+                ],
+                page: 1,
+                size: 10,
+                total: 0,
+
             }
         },
         mounted() {
             this.initJls();
         },
         methods: {
+            sizeChange(currentSize){
+                this.size = currentSize;
+                this.initJls();
+            },
+            currentChange(currentPage){
+                this.page = currentPage;
+                this.initJls();
+            },
             deleteJobLevelByIds(){
                 this.$confirm('是否删除选中的职称? ', '提示', {
                     confirmButtonText: '确定',
@@ -159,9 +180,11 @@
 
             },
             initJls() {
-                this.getRequest("/system/basic/joblevel/").then(resp=>{
+                let url = '/system/basic/joblevel/' + '?page=' + this.page + "&size=" + this.size;
+                this.getRequest(url).then(resp=>{
                     if(resp) {
-                        this.jls = resp;
+                        this.jls = resp.data;
+                        this.total = resp.total;
                     }
                 })
             },
