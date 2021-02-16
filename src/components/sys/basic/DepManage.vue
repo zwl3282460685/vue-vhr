@@ -5,7 +5,6 @@
                 placeholder="输入部门名称进行搜索..."
                 v-model="filterText">
         </el-input>
-
         <el-tree
                 style="margin-top: 5px"
                 :data="dps"
@@ -77,8 +76,8 @@
             }
         },
         watch: {
-            filterText(val) {
-                this.$refs.tree.filter(val);
+            filterText(val) { //当filterText值发生变化时会触发此方法
+                this.$refs.tree.filter(val); //获取树形控件并调用filter方法
             }
         },
         mounted() {

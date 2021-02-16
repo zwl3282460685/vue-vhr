@@ -115,7 +115,7 @@
                   })
               }
             },
-            showPop(hr){
+             showPop(hr){
                 this.initAllRoles();
                 let roles = hr.roles;
                 this.selectRoles = [];

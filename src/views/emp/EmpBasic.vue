@@ -38,8 +38,9 @@
                     </el-button>
                 </div>
             </div>
+            <!--过渡动画设置-->
             <transition name="slide-fade">
-            <div v-show="showAdvanceSearchView" style="border: 1px solid #13548A; border-radius: 5px; box-sizing: border-box; padding: 5px; margin: 10px 0px">
+                <div v-show="showAdvanceSearchView" style="border: 1px solid #13548A; border-radius: 5px; box-sizing: border-box; padding: 5px; margin: 10px 0px">
                 <el-row>
                     <el-col :span="5">
                         政治面貌：

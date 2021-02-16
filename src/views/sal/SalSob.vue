@@ -15,7 +15,7 @@
                 <el-table-column width="100px" prop="createDate" label="启用时间"></el-table-column>
                 <el-table-column label="养老金" align="center">
                     <el-table-column width="70px" prop="pensionPer" label="比率"></el-table-column>
-                    <el-table-column width="70px" prop="pensionBasic" label="基数"></el-table-column>
+                    <el-table-column width="70px" prop="pensionBase" label="基数"></el-table-column>
                 </el-table-column>
                 <el-table-column label="医疗保险" align="center">
                     <el-table-column width="70px" prop="medicalPer" label="比率"></el-table-column>
@@ -61,9 +61,7 @@
         data(){
             return{
                 dialogVisible: false,
-                salaries: [
-
-                ],
+                salaries: [],
                 salaryItemName: [
                     '基本工资',
                     '交通补助',
@@ -77,18 +75,18 @@
                     '公积金基数',
                     '账套名称'
                 ],
-                activeItemIndex: 0,
+                activeItemIndex: 0, //步骤条中激活的项
                 salary: {
-                    basicSalary: 0,
-                    trafficSalary:0,
-                    lunchSalary:0,
-                    bonus: 0,
-                    pensionPer: 0,
-                    pensionBasic: 0,
-                    medicalPer: 0,
-                    medicalBase: 0,
-                    accumulationFundPer: 0,
-                    accumulationFundBase: 0,
+                    basicSalary: "",
+                    trafficSalary:"",
+                    lunchSalary:"",
+                    bonus: "",
+                    pensionPer: "",
+                    pensionBase: "",
+                    medicalPer: "",
+                    medicalBase: "",
+                    accumulationFundPer: "",
+                    accumulationFundBase: "",
                     name: ""
                 },
                 dialogTitle: "添加工资账套"
@@ -148,16 +146,16 @@
             showAddSalaryView(){
                 //数据初始化
                 this.salary={
-                    basicSalary: 0,
-                    trafficSalary:0,
-                    lunchSalary:0,
-                    bonus: 0,
-                    pensionPer: 0,
-                    pensionBasic: 0,
-                    medicalPer: 0,
-                    medicalBase: 0,
-                    accumulationFundPer: 0,
-                    accumulationFundBase: 0,
+                    basicSalary: "",
+                    trafficSalary:"",
+                    lunchSalary:"",
+                    bonus: "",
+                    pensionPer: "",
+                    pensionBase: "",
+                    medicalPer: "",
+                    medicalBase: "",
+                    accumulationFundPer: "",
+                    accumulationFundBase: "",
                     name:""
                 }
                 this.dialogTitle = "添加工资账套";
@@ -172,7 +170,7 @@
                 this.salary.lunchSalary = data.lunchSalary;
                 this.salary.bonus = data.bonus;
                 this.salary.pensionPer = data.pensionPer;
-                this.salary.pensionBasic = data.pensionBasic;
+                this.salary.pensionBase = data.pensionBase;
                 this.salary.medicalPer = data.medicalPer;
                 this.salary.medicalBase = data.medicalBase;
                 this.salary.accumulationFundPer = data.accumulationFundPer;

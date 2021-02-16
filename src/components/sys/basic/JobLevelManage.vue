@@ -64,7 +64,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-
             <el-dialog title="修改职称信息" :visible.sync="dialogVisible" width="30%">
                 <div>
                     <table>
@@ -86,12 +85,10 @@
                         <tr>
                             <td><el-tag>是否启用</el-tag></td>
                             <td>
-                                <el-switch v-model="updateJl.enabled" active-text="启用" inactive-text="禁用" class="enableStyle">
-                                </el-switch>
+                                <el-switch v-model="updateJl.enabled" active-text="启用" inactive-text="禁用" class="enableStyle"></el-switch>
                             </td>
                         </tr>
                     </table>
-
                 </div>
                 <span slot="footer" class="dialog-footer">
             <el-button size="small" @click="dialogVisible = false">取 消</el-button>
@@ -200,7 +197,7 @@
                 })
             },
             showEditView(index, data) {
-                Object.assign(this.updateJl, data)
+                Object.assign(this.updateJl, data) //克隆对象
                 this.dialogVisible = true;
             },
             deleteJobLevel(index, data) {

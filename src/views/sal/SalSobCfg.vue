@@ -1,7 +1,9 @@
 <template>
     <div>
         <div>
-            <el-table :data="emps" border stripe>
+            <el-table
+                    :data="emps"
+                    border stripe>
                 <el-table-column type="selection" align="left" width="55"></el-table-column>
                 <el-table-column prop="name" label="姓名" fixed width="120" align="left"></el-table-column>
                 <el-table-column prop="workId" label="工号"  width="120" align="left"></el-table-column>
@@ -111,7 +113,8 @@
                 currentSalary: null,
                 total: 0,
                 currentPage: 1,
-                currentSize: 10
+                currentSize: 10,
+                loading: false
             }
         },
         mounted() {
